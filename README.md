@@ -1,2 +1,2 @@
-# SoS_GraphToolSandbox
-Sandbox for playing with graph tool sw
+# SoS_Resonance
+Sandbox for playing with resonance concept
