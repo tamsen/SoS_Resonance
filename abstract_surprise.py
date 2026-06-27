@@ -10,17 +10,18 @@ from sentence_transformers import SentenceTransformer
 
 def calculate_surprise():
 
-    data_dir = Path(__file__).parent
+    git_data_dir = Path(__file__).parent
+    big_data_dir = "/Users/tdunn/Data/SoS"
     #paper_to_test = 'W2141394518' #start with 'Lorenz 1963'
     paper_to_test = 'W119052030' #start with a random paper
-    
+
     ThreeBreakthroughPaper_References_Citations_Path = (
-        os.path.join(data_dir, "data", "ThreeBreakthroughPaper_References_Citations.txt"))  # future abstract
+        os.path.join(git_data_dir, "data", "ThreeBreakthroughPaper_References_Citations.txt"))  # future abstract
     RandomPaper_References_Citations_Path = (
-        os.path.join(data_dir, "data", "YEARRandomPaper_References_Citations.txt"))  # future abstract
+        os.path.join(git_data_dir, "data", "YEARRandomPaper_References_Citations.txt"))  # future abstract
 
     Paperid_Title_Abstract_Path = (
-        os.path.join(data_dir, "data", "Paperid_Title_Abstract.txt"))  # future abstract
+        os.path.join(big_data_dir, "Paperid_Title_Abstract.txt"))  # future abstract
 
     InformationTheoryCases = {
         'W2141394518': 'Lorenz 1963',
@@ -64,18 +65,39 @@ def calculate_surprise():
 
     # make a list of all the words in the abstracts of lorenz citations
     content_0_words=[]
+    max_num_cit=10
+    cit_found=0
+    print("looking abstracts from the paper's references..")
     for citation in focal_paper_refs:
-        content_0_words = content_0_words+list(PaperAbstract[citation].keys())
+        print(citation)
+        if citation in PaperAbstract:
+            content_0_words = content_0_words+list(PaperAbstract[citation].keys())
+            cit_found = cit_found + 1
+        else:
+            print("can't find " + citation)
+        if cit_found >= max_num_cit:
+            break
 
-    # make a list of all the words in the lorenz abstract
+
+    # make a list of all the words in the focal paper abstract
+    print("looking at the abstract from the paper itself..")
     content_1_words = []
     content_1_words + list(PaperAbstract[paper_to_test].keys())
 
-    # make a list of all the words in the abstracts of lorenz references
+    # make a list of all the words in the abstracts of focal paper references
+    print("looking at the abstracts of the papers which cite the focal paper..")
     content_2_words=[]
+    max_num_cit=10
+    cit_found=0
     for citation in focal_paper_cits:
-        content_2_words = content_2_words + list(PaperAbstract[citation].keys())
-
+        print(citation)
+        if citation in PaperAbstract:
+            content_2_words = content_2_words + list(PaperAbstract[citation].keys())
+            cit_found = cit_found + 1
+        else:
+            print("can't find " + citation)
+        if cit_found >= max_num_cit:
+            break
 
     # sanity check, this should be zero
     kl_divergence_should_be_zero= calculate_surprise_between_two_word_lists(
