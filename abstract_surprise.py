@@ -185,11 +185,11 @@ def get_abstract_word_list(PaperAbstract: dict[Any, Any], paper_to_test: str) ->
 
     for w in PaperAbstract[paper_to_test]:
 
-        word=[w]
+        word=[[w][0].lower()]
         invalid_chars = set(word) - set(allowed_chars)
         if not invalid_chars:
-            content_1_words += [w] * len(PaperAbstract[paper_to_test][w])
-            
+            content_1_words += word * len(PaperAbstract[paper_to_test][w])
+
     content_1_line = " ".join(content_1_words)
     return content_1_line, content_1_words
 
